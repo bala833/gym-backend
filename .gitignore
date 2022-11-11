@@ -1,0 +1,7 @@
+venv/
+env/
+db.sqlite3
+*.pyc
+.idea/
+media/
+gym_backend/settings.py
