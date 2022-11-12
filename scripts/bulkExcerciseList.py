@@ -9,13 +9,16 @@ from django.core.files.temp import NamedTemporaryFile
 # CommandError: An error has occurred running scripts. See errors above.
 
 from django.db import transaction
-import json
+import json, os
 def bulkFireQuery():
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # Opening JSON file
-    f = open('F://GYM project//gym-backend//common_function//excercise.json')
-    # returns JSON object as 
+    # f = open('gym-backend//common_function//excercise.json')
+    json_file = open(os.path.join(BASE_DIR, 'common_function/excercise.json'))
+
+    # returns JSON object as
     # a dictionary
-    data = json.load(f)
+    data = json.load(json_file)
 
     # Excerciseslist = []
     count = 1
