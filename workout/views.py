@@ -470,6 +470,7 @@ def get_user_id(request):
     """
 
     user_data = {}
+    base_url =  "{0}://{1}/".format(request.scheme, request.get_host())
     if request.method == "GET":
 
         print(request.data , "comming from user detail api")
