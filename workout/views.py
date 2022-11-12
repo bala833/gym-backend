@@ -85,7 +85,7 @@ def user_profile_register(request):
         user_pref_form = UserProfileSerializer(
             data=data, context={'request': request, })
 
-        # user_pref_form.pic = pic.url 
+        # user_pref_form.pic = pic.url
 
         user_profile_valid = False
         user_profile_valid = user_pref_form.is_valid()
@@ -104,14 +104,14 @@ def user_profile_register(request):
                 if (role == 'Super User'):
                     user.is_superuser = True
                     user.is_staff = True
-                else: 
+                else:
                     user.is_superuser = False
-                    user.is_staff = False    
+                    user.is_staff = False
                 if active:
                     user.is_active = True
                 else:
                     user.is_active = False
-                user.save()            
+                user.save()
                 try:
                     send_otp_via_email(data['email'])
                 except Exception as e:
@@ -133,20 +133,20 @@ def user_profile_register(request):
         user_detail = User.objects.get(id=id_)
         userprofile_detail = UserProfile.objects.get(user_id=id_)
 
-        user_detail.first_name = data['user']['first_name'] 
+        user_detail.first_name = data['user']['first_name']
         user_detail.last_name = data['user']['last_name']
 
         if data['is_active']:
             user_detail.is_active = True
-        else:    
+        else:
             user_detail.is_active = False
 
         if (data['role_type'] == 'Super User'):
             user_detail.is_superuser = True
             user_detail.is_staff = True
-        else: 
+        else:
             user_detail.is_superuser = False
-            user_detail.is_staff = False             
+            user_detail.is_staff = False
         user_detail.save()
 
         userprofile_detail.phone = data['phone']
@@ -157,7 +157,7 @@ def user_profile_register(request):
         userprofile_detail.save()
         #  # 'pic' : base_url+userprofile_detail.pic.url
         response_data = {'user' : data['user']['first_name']}
-    return Response(response_data, status=status.HTTP_200_OK)    
+    return Response(response_data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -179,7 +179,7 @@ def verify_otp(request):
 
                 try:
                     user = UserProfile.objects.get(email = email)
-                        
+
                     if (user.otp != otp):
                         response_ = {
                                         'status' : 400,
@@ -210,7 +210,7 @@ def verify_otp(request):
                         'data' : serializer.errors
                         }
             return Response(response_)
-                
+
 
 
         except Exception as e:
@@ -239,17 +239,17 @@ def login_user(request):
         checkpermission = User.objects.get(email=username)
         userprofile = UserProfile.objects.get(user=checkpermission)
 
-        # check weather user is active 
+        # check weather user is active
         if not checkpermission.is_active:
             validation_error = "Account not active"
             return Response(validation_error, 400)
 
-        # custome user profile is varified field validation    
+        # custome user profile is varified field validation
         if not userprofile.is_verified:
             validation_error = "Account is not verified"
             return Response(validation_error, 400)
 
-        # check weather user have permission or not    
+        # check weather user have permission or not
         if not checkpermission.is_superuser:
             print("user is not super user")
             raise PermissionDenied
@@ -365,8 +365,8 @@ def FiterPastDate(request):
         if (user.valid_to):
             if (user.valid_to < today):
                 User.objects.filter(pk=user.user.id).update(is_active=False)
-            pass    
-        pass    
+            pass
+        pass
     return Response(data)
 
 
@@ -375,19 +375,20 @@ def FiterPastDate(request):
 @authentication_classes([])
 @permission_classes([])
 def get_user_by_token(request):
-    """ 
+    """
     {
     "token": "54sd45432131303213265461623232322"
     }
     """
+    base_url =  "{0}://{1}/".format(request.scheme, request.get_host())
     if request.method == "GET":
         # abc = User.objects.all()
         # for i in abc:
         #     print(i.id, i.username, "users id and username ")
         data = 'enter some value'
-        base_url =  "{0}://{1}/".format(request.scheme, request.get_host())
+        # base_url =  "{0}://{1}/".format(request.scheme, request.get_host())
         return Response(data)
-        
+
     elif request.method == "POST":
         fetch_data = request.data
         data = {}
@@ -397,7 +398,7 @@ def get_user_by_token(request):
             user_profile = UserProfile.objects.get(email=user_detail.email)
 
             current_user_id = user_profile.user.id
-            
+
             if user_profile.user.username:
                 username = user_profile.user.username
             else:
@@ -408,7 +409,7 @@ def get_user_by_token(request):
                 picture = base_url+user_profile.pic.url
             else:
                 picture = None
-                
+
             if user_profile.user.first_name:
                 first_name = user_profile.user.first_name
             else:
@@ -455,7 +456,7 @@ def get_user_by_token(request):
             return Response(data)
         except Exception as e:
             print(f'Invalid Token {e}')
-            data = 'Invalid Token'
+            data = f'Invalid Token {e}'
             return Response(data)
 
 
@@ -470,7 +471,7 @@ def get_user_id(request):
 
     user_data = {}
     if request.method == "GET":
-    
+
         print(request.data , "comming from user detail api")
     if request.method == "POST":
         u_id = request.data
@@ -492,7 +493,7 @@ def get_user_id(request):
             picture = base_url+user_profile.pic.url
         else:
             picture = None
-            
+
         if user_profile.user.first_name:
             first_name = user_profile.user.first_name
         else:
@@ -521,7 +522,7 @@ def get_user_id(request):
         if user_profile.from_to:
             from_to = str(user_profile.from_to)
         else:
-            from_to = ""   
+            from_to = ""
 
         if user_profile.user.is_active:
             check_active =  user_profile.user.is_active
@@ -530,12 +531,12 @@ def get_user_id(request):
 
         if user_profile.user.is_superuser:
             role_type = 'Super User'
-        else:    
-            role_type = 'Customer'    
+        else:
+            role_type = 'Customer'
 
         user_details = {'username' : username,
                  "picture" : picture, "first_name" : first_name, "last_name" : last_name,
-                 "email" : email, "phone" : phone, "from_to" : from_to, "valid_to" : valid_to, 
+                 "email" : email, "phone" : phone, "from_to" : from_to, "valid_to" : valid_to,
                  'active' : check_active, "id": current_user_id, "role_type" : role_type}
         user_data.update(user_details)
         return Response(user_data)
