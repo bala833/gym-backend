@@ -457,7 +457,7 @@ def get_user_by_token(request):
             return Response(data)
         except Exception as e:
             print(f'Invalid Token {e}')
-            data = f'Invalid Token {e}'
+            data = 'Invalid Token'
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
