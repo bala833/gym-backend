@@ -44,7 +44,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from common_function.send_otp_mail import send_otp_via_email
 from workout.models import Excerciseslist
 
-
 @api_view(['POST'])
 # @permission_classes((IsAuthenticated,))
 # @authentication_classes((TokenAuthentication,))
@@ -156,7 +155,7 @@ def user_profile_register(request):
         # if data["picture"]:
         #     userprofile_detail.pic = request.FILES['picture']
         userprofile_detail.save()
-        #  # 'pic' : IMAGE_PREFIX+userprofile_detail.pic.url
+        #  # 'pic' : base_url+userprofile_detail.pic.url
         response_data = {'user' : data['user']['first_name']}
     return Response(response_data, status=status.HTTP_200_OK)    
 
@@ -386,6 +385,7 @@ def get_user_by_token(request):
         # for i in abc:
         #     print(i.id, i.username, "users id and username ")
         data = 'enter some value'
+        base_url =  "{0}://{1}/".format(request.scheme, request.get_host())
         return Response(data)
         
     elif request.method == "POST":
@@ -405,7 +405,7 @@ def get_user_by_token(request):
 
             if user_profile.pic:
                 print(user_profile.pic.url,"sdfasf")
-                picture = IMAGE_PREFIX+user_profile.pic.url
+                picture = base_url+user_profile.pic.url
             else:
                 picture = None
                 
@@ -489,7 +489,7 @@ def get_user_id(request):
             username = ""
 
         if user_profile.pic:
-            picture = IMAGE_PREFIX+user_profile.pic.url
+            picture = base_url+user_profile.pic.url
         else:
             picture = None
             
