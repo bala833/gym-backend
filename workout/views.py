@@ -43,6 +43,7 @@ from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
 from common_function.send_otp_mail import send_otp_via_email
 from workout.models import Excerciseslist
+from rest_framework import status
 
 @api_view(['POST'])
 # @permission_classes((IsAuthenticated,))
@@ -457,7 +458,7 @@ def get_user_by_token(request):
         except Exception as e:
             print(f'Invalid Token {e}')
             data = f'Invalid Token {e}'
-            return Response(data)
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
 # @is_superuser
