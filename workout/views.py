@@ -577,3 +577,25 @@ def getExcercise(request):
         result_page, many=True)
 
     return paginator.get_paginated_response(serializer.data)
+
+
+# calculate BMI
+# [weight (kg) / height (cm) / height (cm)] x 10,
+@api_view(['GET', 'POST'])
+@permission_classes([])
+@authentication_classes([])
+def calculteByKey(request):
+    """Calculate BMI height=cm and weight=kg
+    
+    {"bmi" : {"height": 10, "weight" : 20}}"""
+    data = request.data
+
+    if data:
+        height = data['bmi']['height']
+        weight = data['bmi']['weight']
+        calculate = round(((weight/height/height)*10000),1)
+        data = {'BMI' : calculate}
+    else:
+        data ={'calulate' : 'BMI, Body Fate'}
+    return Response(data)
+

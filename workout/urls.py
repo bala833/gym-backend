@@ -6,7 +6,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from workout.views import  (
                 login_user,user_profile_register,verify_otp,user_logout, userprofile_list,user_filter,
                 FiterPastDate, get_user_by_token, get_user_id, 
-                getExcercise
+                getExcercise,calculteByKey
                )
 urlpatterns = [
     url(r'^userprofile/register/$', user_profile_register, name='user-register'),
@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^datefilter/$', FiterPastDate, name='datefilter'),
     url(r'^get-user-token/$', get_user_by_token, name='get-user-by-token'),
     url(r'^excercise/$', getExcercise, name='Excerciseslist'),
+    url(r'^calculatebykey/$', calculteByKey, name='calculatebykey'),
 
 
 
