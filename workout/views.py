@@ -381,7 +381,7 @@ def get_user_by_token(request):
     "token": "54sd45432131303213265461623232322"
     }
     """
-    base_url =  "{0}://{1}/".format(request.scheme, request.get_host())
+    base_url =  "{0}://{1}".format(request.scheme, request.get_host())
     if request.method == "GET":
         # abc = User.objects.all()
         # for i in abc:
@@ -471,7 +471,7 @@ def get_user_id(request):
     """
 
     user_data = {}
-    base_url =  "{0}://{1}/".format(request.scheme, request.get_host())
+    base_url =  "{0}://{1}".format(request.scheme, request.get_host())
     if request.method == "GET":
 
         print(request.data , "comming from user detail api")
