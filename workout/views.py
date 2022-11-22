@@ -441,6 +441,11 @@ def get_user_by_token(request):
             else:
                 valid_to = ""
 
+            if user_profile.user.is_superuser and user_profile.user.is_staff:
+                role_type = 'Super User'
+            else:
+                role_type = ''
+
 
 
             if token:
@@ -451,7 +456,7 @@ def get_user_by_token(request):
             # data = {"username" : user_profile.user}
             user_details = {'username' : username,
                      "picture" : picture, "first_name" : first_name, "last_name" : last_name,
-                     "email" : email, "phone" : phone,
+                     "email" : email, "phone" : phone, 'role_type' : role_type,
                     "id": current_user_id, "IsAuthenticate" : IsAuthenticate, 'from_to' : from_to, 'valid_to' : valid_to  }
             data.update(user_details)
             return Response(data)
