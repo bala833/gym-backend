@@ -243,12 +243,12 @@ def login_user(request):
         # check weather user is active
         if not checkpermission.is_active:
             validation_error = "Account not active"
-            return Response(validation_error, 400)
+            return Response(validation_error, 403)
 
         # custome user profile is varified field validation
         if not userprofile.is_verified:
             validation_error = "Account is not verified"
-            return Response(validation_error, 400)
+            return Response(validation_error, 401)
 
         # check weather user have permission or not
         if not checkpermission.is_superuser:

@@ -35,23 +35,27 @@ class PaymentView(APIView):
         # order_id = request.data.get('order_id', None)
 
         # Here We are Using Static Order Details for Demo.
-        name = "Swapnil Pawar"
-        amount = 10
+        # name = "Swapnil Pawar"
+        # amount = 10
+        print(request.data, "asdfasdfasdf")
+
+        data = request.data
+
 
         # Create Order
         razorpay_order = razorpay_client.order.create(
-            {"amount": int(amount* 100), "currency": "INR", "payment_capture": "1"}
+            {"amount": int(data['amount']* 100), "currency": "INR", "payment_capture": "1"}
         )
 
         # Save the order in DB
         order = RazorpayPayment.objects.create(
-            name=name, amount=amount, provider_order_id=razorpay_order["id"]
+            name=data['name'], amount=data['amount'], provider_order_id=razorpay_order["id"]
         )
 
         data = {
-            "name" : name,
+            "name" : data['name'],
             "merchantId": RAZOR_KEY,
-            "amount": amount,
+            "amount": data['amount'],
             "currency" : 'INR' ,
             "orderId" : razorpay_order["id"],
             }
