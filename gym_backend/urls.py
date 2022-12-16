@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include, url
+from django.conf.urls import include
+from django.urls import re_path as url
+
+from django.urls import include, re_path
+
 from rest_framework import routers
 from django.contrib import admin
 admin.autodiscover()

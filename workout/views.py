@@ -31,7 +31,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from django.conf.urls import include, url
+# from django.conf.urls import include, url
+from django.urls import re_path as url
+
 from workout.models import UserProfile
 from rest_framework.pagination import PageNumberPagination
 from workout.serializers import (UserProfileSerializer, OtpVerificationSerializer,UserProfileListSerializer,
@@ -253,7 +255,9 @@ def login_user(request):
         # check weather user have permission or not
         if not checkpermission.is_superuser:
             print("user is not super user")
-            raise PermissionDenied
+            validation_error = "User is not superuser"
+            return Response(validation_error, 403)
+            # raise PermissionDenied
         Account = authenticate(username=username, password=password)
 
     except Exception as e:
