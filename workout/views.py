@@ -245,25 +245,25 @@ def login_user(request):
         # check weather user is active
         if not checkpermission.is_active:
             validation_error = "Account not active"
-            return Response(validation_error, 403)
+            return Response(validation_error, status=status.HTTP_403_FORBIDDEN)
 
         # custome user profile is varified field validation
         if not userprofile.is_verified:
             validation_error = "Account is not verified"
-            return Response(validation_error, 401)
+            return Response(validation_error, status=status.HTTP_401_UNAUTHORIZED)
 
         # check weather user have permission or not
         if not checkpermission.is_superuser:
             print("user is not super user")
             validation_error = "User is not superuser"
-            return Response(validation_error, 403)
+            return Response(validation_error, status=status.HTTP_403_FORBIDDEN)
             # raise PermissionDenied
         Account = authenticate(username=username, password=password)
 
     except Exception as e:
 
-        validation_error = f"Incorrect Login credentials {e}"
-        return Response(validation_error, 400)
+        validation_error = "Incorrect Login credentials"
+        return Response(validation_error, status=status.HTTP_400_BAD_REQUEST)
 
     if Account != None:
         token = Token.objects.get_or_create(user=Account)[0].key
@@ -273,11 +273,11 @@ def login_user(request):
         data['token'] = token
         data['username'] = Account.username
         Res = data
-        return Response(Res)
+        return Response(Res, status=200)
 
     else:
         validation_error = "Incorrect Login credentials"
-        return Response(validation_error, 400)
+        return Response(validation_error, status=400)
 
 
 
