@@ -253,11 +253,16 @@ def login_user(request):
             return Response(validation_error, status=status.HTTP_401_UNAUTHORIZED)
 
         # check weather user have permission or not
-        if not checkpermission.is_superuser:
+        if not checkpermission.is_superuser or not checkpermission.is_staff:
             print("user is not super user")
             validation_error = "User is not superuser"
             return Response(validation_error, status=status.HTTP_403_FORBIDDEN)
             # raise PermissionDenied
+        # if not checkpermission.is_staff:
+        #     print("user is not super user")
+        #     validation_error = "User is not superuser"
+        #     return Response(validation_error, status=status.HTTP_403_FORBIDDEN)
+            
         Account = authenticate(username=username, password=password)
 
     except Exception as e:
