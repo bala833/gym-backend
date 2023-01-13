@@ -322,6 +322,7 @@ def userprofile_list(request):
 
     serializer = UserProfileListSerializer(
         result_page, many=True)
+    time.sleep(10)
 
     return paginator.get_paginated_response(serializer.data)
 
@@ -600,16 +601,30 @@ def getExcercise(request):
 @authentication_classes([])
 def calculteByKey(request):
     """Calculate BMI height=cm and weight=kg
+    {"bmi" : {"height": 10, "weight" : 20}}
     
-    {"bmi" : {"height": 10, "weight" : 20}}"""
+    Calculate Weight loass weight=kg and goal_weight=kg
+    {"cal_weight_loss" : {"current_weight": 100, "goal_weight" : 60}}
+    """
     data = request.data
+    
 
     if data:
-        height = data['bmi']['height']
-        weight = data['bmi']['weight']
-        calculate = round(((weight/height/height)*10000),1)
-        data = {'BMI' : calculate}
+        filterByKey = list(data.keys())[0]
+        if filterByKey == 'bmi':
+            height = data['bmi']['height']
+            weight = data['bmi']['weight']
+            calculate = round(((weight/height/height)*10000),1)
+            data = {'BMI' : calculate}
+        elif filterByKey == 'cal_weight_loss':
+            #  progress of weight loss based on a given current weight and goal weight 
+            # progress = (200 - 150) / 150 = 0.33 or 33%
+            weight = data['cal_weight_loss']['current_weight']
+            goalWeight = data['cal_weight_loss']['goal_weight']
+            progress = (weight - goalWeight) * 100 / goalWeight
+            data = {'PROGRESS_WEIGHT_LOSS' : progress }
     else:
         data ={'calulate' : 'BMI, Body Fate'}
     return Response(data)
+
 
