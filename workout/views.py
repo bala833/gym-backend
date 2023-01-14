@@ -621,7 +621,7 @@ def calculteByKey(request):
             # progress = (200 - 150) / 150 = 0.33 or 33%
             weight = data['cal_weight_loss']['current_weight']
             goalWeight = data['cal_weight_loss']['goal_weight']
-            progress = (weight - goalWeight) * 100 / goalWeight
+            progress = round((weight - goalWeight) * 100 / goalWeight,2)
             data = {'PROGRESS_WEIGHT_LOSS' : progress }
     else:
         data ={'calulate' : 'BMI, Body Fate'}
