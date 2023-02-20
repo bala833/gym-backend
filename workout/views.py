@@ -173,6 +173,7 @@ def verify_otp(request):
     }
     """
     if request.method == 'POST':
+        time.sleep(2)
         try:
             data = request.data
             serializer = OtpVerificationSerializer(data = data)
@@ -195,7 +196,7 @@ def verify_otp(request):
                     response_ = {
                                     'status' : 200,
                                     'message' : 'account is verified',
-                                    'data' : {}
+                                    'data' : 'account is verified'
                                     }
                     return Response(response_)
 
@@ -220,6 +221,31 @@ def verify_otp(request):
             print(e)
             return Response({"status" : 400,
                             "message" : 'something went wrong'})
+
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def resend_otp(request):
+    """
+    {
+    "email" : "balaprajapati02@gmail.com",
+    }
+    """    
+    if request.method == 'POST':
+        data = request.data
+        try:
+            send_otp_via_email(data['email'])
+        except Exception as e:
+            print(e, "send otp via email")
+            return Response({"status" : 500,
+                            "message" : 'something went wrong'})
+        print("otp resend successfully")
+        return Response({"status" : 200,
+                            "message" : 'otp resend successfully'})
+
+
+
 from django.core.exceptions import PermissionDenied
 
 @csrf_exempt
@@ -308,11 +334,12 @@ def user_logout(request):
 @authentication_classes([])
 @permission_classes([])
 def userprofile_list(request):
+    # {"limit" : 100}
     data = request.data
     user = UserProfile.objects.all()
     paginator = PageNumberPagination()
     if data:
-        limit = data['limit']
+        limit = int(data['limit'])
         paginator.page_size = limit
     else:
         paginator.page_size = 1
@@ -322,8 +349,6 @@ def userprofile_list(request):
 
     serializer = UserProfileListSerializer(
         result_page, many=True)
-    time.sleep(10)
-
     return paginator.get_paginated_response(serializer.data)
 
 
@@ -341,9 +366,18 @@ def user_filter(request):
     if request.method == 'POST':
         if request.data:
             data = request.data
+            print(data ,' rrrrrr')
             result_data = model.objects.filter(Q(user__username__contains=data['value']) | Q(email__contains=data['value']) | Q(phone__contains=data['value']))
             paginator = PageNumberPagination()
             paginator.page_size = 1
+            if data:
+                print(data,"data on filter")
+                if data['limit']:
+                    
+                    limit = int(data['limit'])
+                    paginator.page_size = limit
+            else:
+                paginator.page_size = 1
             if result_data:
                 result_page = paginator.paginate_queryset(result_data, request)
                 serializer = UserProfileListSerializer(
