@@ -22,37 +22,38 @@ def bulkFireQuery():
 
     # Excerciseslist = []
     count = 1
-    with transaction.atomic():
-	    for ex in data:
-	    	print(ex['bodyPart'])
-	    	reCord = Excerciseslist.objects.create(bodypart= ex['bodyPart'],equipment= ex['equipment'],gif_url= ex['gifUrl'],name= ex['name'],target= ex['target'])
-	    	# print(reCord.id)
-	    	# print(count+1)
-	    	print('--------------')
+    while count <= 100:
+        with transaction.atomic():
+            for ex in data:
+                Excerciseslist.objects.create(bodypart= ex['bodyPart'],equipment= ex['equipment'],gif_url= ex['gifUrl'],name= ex['name'],target= ex['target'])
+                # print(reCord.id, 'check id')
+                # print('--------------')
 
-        # data = {'bodyPart' : ex['bodyPart'], 'equipment' : ex['equipment'], 'gifUrl' : ex['gifUrl'], 'id' : ex['id'], 'name' : ex['name'], 'target' : ex['target']}
-        # Excerciseslist.append(data)
+            # data = {'bodyPart' : ex['bodyPart'], 'equipment' : ex['equipment'], 'gifUrl' : ex['gifUrl'], 'id' : ex['id'], 'name' : ex['name'], 'target' : ex['target']}
+            # Excerciseslist.append(data)
 
-    # filterData = Excerciseslist.objects.filter(gif_url='http://d205bpvrqc9yn1.cloudfront.net/0002.gif')
-    # for i in filterData:
-    # 	print(i.id, i.name)
-    print('query fire successfully')
-    # print(Excerciseslist)
+        # filterData = Excerciseslist.objects.filter(gif_url='http://d205bpvrqc9yn1.cloudfront.net/0002.gif')
+        # for i in filterData:
+        #   print(i.id, i.name)
+        # print('query fire successfully')
+        # print(Excerciseslist)
+        break    
+    print('successfull added record')
 
 
 
 
 # def saveImageFromUrlInModel():
-# 	my_obj = Excerciseslist()
-# 	imageModel = Excerciseslist.objects.all()
-# 	with transaction.atomic():
-# 		for imgUrl in imageModel:
-# 			getModel = Excerciseslist.objects.get(id = imgUrl.id)
-# 			my_obj.get_image_from_url(getModel.gif_url)
-# 			# getModel.save()
+#   my_obj = Excerciseslist()
+#   imageModel = Excerciseslist.objects.all()
+#   with transaction.atomic():
+#       for imgUrl in imageModel:
+#           getModel = Excerciseslist.objects.get(id = imgUrl.id)
+#           my_obj.get_image_from_url(getModel.gif_url)
+#           # getModel.save()
 
 
 
 def run():
-	bulkFireQuery()
-	# saveImageFromUrlInModel()
+    bulkFireQuery()
+    # saveImageFromUrlInModel()

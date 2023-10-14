@@ -160,6 +160,17 @@ class OtpVerificationSerializer(serializers.Serializer):
 
 
 
+class UserProfileFromSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    def get_user(self, obj):
+        userImg = UserProfile.objects.get(user_id = obj.user.id)
+        return {'id' : obj.user.id, 'username' : obj.user.username, 'is_active' : obj.user.is_active, 'is_superuser' : obj.user.is_superuser, 'image' : userImg.pic}
+    class Meta:
+        model = UserProfile
+        fields = ('id','email','phone','pic','user','otp','is_verified')
+
+
 class UserProfileListSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
@@ -168,7 +179,6 @@ class UserProfileListSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('id','email','phone','pic','user','otp','is_verified')
-
 
     # def validate_user(self, value):
     #     if value:

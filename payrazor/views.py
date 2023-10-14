@@ -37,7 +37,6 @@ class PaymentView(APIView):
         # Here We are Using Static Order Details for Demo.
         # name = "Swapnil Pawar"
         # amount = 10
-        print(request.data, "asdfasdfasdf")
 
         data = request.data
 
@@ -59,7 +58,6 @@ class PaymentView(APIView):
             "currency" : 'INR' ,
             "orderId" : razorpay_order["id"],
             }
-        print(data, 'ordrer created')    
 
         # save order Details to frontend
         return Response(data, status=status.HTTP_200_OK)
@@ -77,7 +75,6 @@ class CallbackView(APIView):
 
         # getting data form request
         response = request.data.dict()
-        print(response, "responsessssssssssssssss")
 
         """
             if razorpay_signature is present in the request 

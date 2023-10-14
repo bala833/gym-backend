@@ -54,32 +54,39 @@ from rest_framework import status
 @permission_classes([])
 def user_profile_register(request):
     """
+    {
+    userData: [
         {
-        "user" : {
-        "email": "balapp143@gmail.com",
-        "first_name" : "test",
-        "last_name" : "testp",
-        "password" : "asdfasdf11"
+        user: {
+            first_name: "Pooja",
+            last_name: "pal",
+            email: "poojapal11151@gmail.com",
         },
-        "role_type" : "Super User Customer"
-        "email": "balapp143@gmail.com",
-        "phone": "+919797979798",
-        "username" : "Test",
-        "is_active" : "False",
-        "from_to" : "2022-09-10",
-        "valid_to" : "2022-09-30",
-        "userid" : 0
-         }
-
+        username: "poojapal11151@gmail.com",
+        email: "poojapal11151@gmail.com",
+        phone: "+917654897654",
+        is_active: true,
+        from_to: "2023-01-31",
+        valid_to: "2023-10-28",
+        role_type: "Super User",
+        userid: "4",
+        },
+    ],
+    file: [<TemporaryUploadedFile: IMG_20210321_153801.jpg (image/jpeg)>],
+    };
     """
-
     # if this is a POST request we need to process the form data
 
+
     # create a form instance and populate it with data from the request:
-    data = request.data
-    id_ = int(data['userid'])
+    data = dict(request.data)
+    updatedData = json.loads(data['userData'][0])
+    id_ = int(updatedData['userid'])
     if (id_ <= 0):
-        data = request.data.copy()
+        data = updatedData.copy()
+        if request.FILES:
+            convertDictToObj = dict(request.FILES)
+            data['pic'] =  convertDictToObj['file'][0]
         role = data.pop('role_type')
         active = data.pop('is_active')
         data['user']['username'] = data.get('email')
@@ -98,7 +105,7 @@ def user_profile_register(request):
             username = None
             email = None
             with transaction.atomic():
-                email = request.data.get('email',None)
+                email = updatedData.get('email',None)
 
                 # save user profile ***********************
                 user_profile = user_pref_form.save()
@@ -136,15 +143,15 @@ def user_profile_register(request):
         user_detail = User.objects.get(id=id_)
         userprofile_detail = UserProfile.objects.get(user_id=id_)
 
-        user_detail.first_name = data['user']['first_name']
-        user_detail.last_name = data['user']['last_name']
+        user_detail.first_name = updatedData['user']['first_name']
+        user_detail.last_name = updatedData['user']['last_name']
 
-        if data['is_active']:
+        if updatedData['is_active']:
             user_detail.is_active = True
         else:
             user_detail.is_active = False
 
-        if (data['role_type'] == 'Super User'):
+        if (updatedData['role_type'] == 'Super User'):
             user_detail.is_superuser = True
             user_detail.is_staff = True
         else:
@@ -152,14 +159,15 @@ def user_profile_register(request):
             user_detail.is_staff = False
         user_detail.save()
 
-        userprofile_detail.phone = data['phone']
-        userprofile_detail.from_to = data['from_to']
-        userprofile_detail.valid_to = data['valid_to']
-        # if data["picture"]:
-        #     userprofile_detail.pic = request.FILES['picture']
+        userprofile_detail.phone = updatedData['phone']
+        userprofile_detail.from_to = updatedData['from_to']
+        userprofile_detail.valid_to = updatedData['valid_to']
+        if request.FILES:
+            convertDictToObj = dict(request.FILES)
+            userprofile_detail.pic = convertDictToObj['file'][0]
         userprofile_detail.save()
         #  # 'pic' : base_url+userprofile_detail.pic.url
-        response_data = {'user' : data['user']['first_name']}
+        response_data = {'user' : updatedData['user']['first_name']}
     return Response(response_data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
@@ -280,7 +288,6 @@ def login_user(request):
 
         # check weather user have permission or not
         if not checkpermission.is_superuser or not checkpermission.is_staff:
-            print("user is not super user")
             validation_error = "User is not superuser"
             return Response(validation_error, status=status.HTTP_403_FORBIDDEN)
             # raise PermissionDenied
@@ -320,7 +327,6 @@ def user_logout(request):
 
             request.user.auth_token.delete()
             logout(request)
-            print("logout user successfully")
 
             return Response("logout user successfully")
 
@@ -345,7 +351,6 @@ def userprofile_list(request):
         paginator.page_size = 1
 
     result_page = paginator.paginate_queryset(user, request)
-    print(result_page)
 
     serializer = UserProfileListSerializer(
         result_page, many=True)
@@ -366,12 +371,10 @@ def user_filter(request):
     if request.method == 'POST':
         if request.data:
             data = request.data
-            print(data ,' rrrrrr')
             result_data = model.objects.filter(Q(user__username__contains=data['value']) | Q(email__contains=data['value']) | Q(phone__contains=data['value']))
             paginator = PageNumberPagination()
             paginator.page_size = 1
             if data:
-                print(data,"data on filter")
                 if data['limit']:
                     
                     limit = int(data['limit'])
@@ -404,7 +407,6 @@ from datetime import date
 def FiterPastDate(request):
     users = UserProfile.objects.all()
     today = date.today()
-    print("Today date is: ", today)
     data = {"Today Data is " : today}
     for user in users:
         if (user.valid_to):
@@ -450,7 +452,6 @@ def get_user_by_token(request):
                 username = ""
 
             if user_profile.pic:
-                print(user_profile.pic.url,"sdfasf")
                 picture = base_url+user_profile.pic.url
             else:
                 picture = None
@@ -505,7 +506,6 @@ def get_user_by_token(request):
             data.update(user_details)
             return Response(data)
         except Exception as e:
-            print(f'Invalid Token {e}')
             data = 'Invalid Token'
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 

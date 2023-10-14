@@ -31,5 +31,3 @@ class MyCronJob(CronJobBase):
 
     def do(self):
         # code()
-        print("runing cron job")
-        pass    # do your thing here
