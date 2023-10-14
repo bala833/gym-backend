@@ -1,0 +1,7 @@
+run script file
+
+>>> python3 manage.py runscript -v3  bulkExcerciseList
+
+active env in mac
+
+source Gym/bin/active
